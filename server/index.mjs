@@ -17,7 +17,10 @@ if(!secret || secret.length<32) throw new Error('Set a random JWT_SECRET with at
 app.disable('x-powered-by');
 app.use(helmet({contentSecurityPolicy:false}));
 app.use(express.json({limit:'1mb'}));
-app.use('/api/auth/login',rateLimit({windowMs:15*60*1000,limit:12,standardHeaders:'draft-7',legacyHeaders:false}));
+app.use('/api/auth/login',
+ rateLimit({windowMs:15*60*1000,limit:200,standardHeaders:'draft-7',legacyHeaders:false}),
+ rateLimit({windowMs:15*60*1000,limit:12,keyGenerator:req=>String(req.body?.username||'').trim().toLowerCase().slice(0,70),standardHeaders:'draft-7',legacyHeaders:false})
+);
 const fail=(status,message)=>{const e=new Error(message);e.status=status;throw e;};
 const endpoint=fn=>(req,res,next)=>{try{Promise.resolve(fn(req,res)).catch(next);}catch(e){next(e);}};
 const allow=(...allowed)=>(req,res,next)=> allowed.includes(req.user?.role)?next():next(Object.assign(new Error('ليس لديك الصلاحية المطلوبة'),{status:403}));
@@ -346,7 +349,7 @@ if(fs.existsSync(dist)){
 }
 app.use((err,req,res,next)=>{
  if(err instanceof multer.MulterError) return res.status(400).json({error:'خطأ رفع الملف: '+err.message});
- console.error(err);
+ if(!err.status)console.error(err);
  res.status(err.status||500).json({error:err.status?err.message:'حدث خطأ داخلي، يرجى التواصل مع مسؤول النظام'});
 });
 app.listen(PORT,'0.0.0.0',()=>console.log('Projects Workflow API listening on '+PORT));
