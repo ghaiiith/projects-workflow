@@ -17,4 +17,5 @@ jobs:
       - run: node --check server/db.mjs
       - run: node --check server/index.mjs
       - run: npm test
+      - run: node tests/smoke.mjs
       - run: npm run build
