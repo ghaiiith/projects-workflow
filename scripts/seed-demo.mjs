@@ -161,7 +161,7 @@ else {
   const writeAudit=(p,actor,action,from,to,note,when)=>{
    auditSt.run(uuid(),p,actor,action,from,to,MARK+' | '+note,sqlTime(when));tally.audits++;
   };
-  const docSt=db.prepare('INSERT INTO documents(id,project_id,doc_key,original_name,stored_name,mime,bytes,uploaded_by,created_at) VALUES(?,?,?,?,?,?,?,?)');
+  const docSt=db.prepare('INSERT INTO documents(id,project_id,doc_key,original_name,stored_name,mime,bytes,uploaded_by,created_at) VALUES(?,?,?,?,?,?,?,?,?)');
   const projectSt=db.prepare('INSERT INTO projects(id,code,title,governorate,district,beneficiary,executing_entity,sector,summary,estimated_cost,total_cost,fiscal_year,procurement_method,status,committee_id,review_round,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
   const reviewSt=db.prepare('INSERT INTO reviews(id,project_id,review_round,user_id,decision,note,created_at) VALUES(?,?,?,?,?,?,?)');
   const bidSt=db.prepare('INSERT INTO bids(id,project_id,bidder,offer_amount,received_at,compliant,recommended,note,created_by,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)');
